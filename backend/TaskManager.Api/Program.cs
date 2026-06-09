@@ -22,10 +22,10 @@ namespace TaskManager.API;
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
             );
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            // builder.Services.AddScoped<IUserRepository, UserRepository>();
+            // builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+            // builder.Services.AddScoped<IAuthService, AuthService>();
+            // builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
             // JWT AUTH
             builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
