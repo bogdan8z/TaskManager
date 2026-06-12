@@ -17,9 +17,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddDbContext<AppDbContext>(opt =>
-            opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
-        );
+        // builder.Services.AddDbContext<AppDbContext>(opt =>
+        //     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
+        // );
 
         // builder.Services.AddScoped<IUserRepository, UserRepository>();
         // builder.Services.AddScoped<ITaskRepository, TaskRepository>();
@@ -50,6 +50,9 @@ public class Program
 
         var app = builder.Build();
 
+        // AUTO MIGRATION HERE
+        AutoAddDbMigration(app);
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -66,5 +69,25 @@ public class Program
         app.MapControllers();
 
         app.Run();
+    }
+
+    private static void AutoAddDbMigration(WebApplication app)
+    {
+        var retries = 5;
+        while (retries > 0)
+        {
+            try
+            {
+                using var scope = app.Services.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.Migrate();
+                break;
+            }
+            catch
+            {
+                retries--;
+                Thread.Sleep(2000);
+            }
+        }
     }
 }
