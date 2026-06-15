@@ -1,2 +1,3 @@
-# TaskManager
-.net 9
+# Task Manager
+.NET 9
+react
