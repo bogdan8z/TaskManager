@@ -106,5 +106,6 @@ and get the ip adress
 9. debug sql:
 > docker exec -it sqlserver "bash"
 > /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -C
+> 
 > select name from sys.databases
 > GO
