@@ -76,36 +76,36 @@ public class OrderRepository : IOrderRepository
 - **Infrastructure Layer** → Handles external dependencies like databases, APIs, and file systems.
 - **Presentation** → API/UI entry point for users and clients.
 
+### Add migration, see AutoAddDbMigration method
+First time run in Infra project:
+> dotnet ef migrations add InitialCreate
+> dotnet ef database update
+After that every time you do a change to the entities you need to add a new migration
+
+### Debugging database:
+
+> docker exec -it sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -C
+> select name from sys.databases
+> GO
+
+### TaskManager API 
+The project uses docker for sql server (check *docker-compose.yml* file)
+Run the database:
+> docker-compose up -d
+
+Run the API:
+> dotnet run
+
+Every time you start the API you need to check if the connectionstring has the correct ip address of the sql server, by running:
+> docker inspect <container_id> | grep IPAddress
+
+and get the ip address, then in appsettings.json check that you have: 
+```json
+  "ConnectionStrings": {
+      "Default": "server=<ip_address>,1433;Database=TaskDb;User Id=sa;Password=\"5ZI6=q;A0ni=\";TrustServerCertificate=True"
+    }
+```
+
 ## Links
 - https://sharpskill.dev/en/blog/dotnet/clean-architecture-dotnet-practical-guide
 - https://dev.to/ravivis13370227/clean-architecture-in-net-application-step-by-step-2ol0
-
-
-
-use docker with sql server
-steps:
-1. create docker-compose.yml
-2. > docker-compose up -d
-3. run 
-> docker inspect <container_id> | grep IPAddress 
-and get the ip adress
-4. in appsettings.json add: "ConnectionStrings": {
-    "Default": "server=<ip_adress>,1433;Database=TaskDb;User Id=sa;Password=\"5ZI6=q;A0ni=\";TrustServerCertificate=True"
-  },
-5. in Infra project add ef core packages:
-> dotnet tool install dotnet-ef
-> dotnet add package Microsoft.EntityFrameworkCore.SqlServer
-> dotnet add package Microsoft.EntityFrameworkCore.Tool
-> dotnet add package Microsoft.EntityFrameworkCore.Design --version 9.0.17
-
-7.add migration, see AutoAddDbMigration method
-8. run only once in Infra project: 
-> dotnet ef migrations add InitialCreate
-> dotnet ef database update
-
-9. debug sql:
-> docker exec -it sqlserver "bash"
-> /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -C
-> 
-> select name from sys.databases
-> GO
