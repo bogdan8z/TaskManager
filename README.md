@@ -3,7 +3,14 @@
 react
 
 ## Run the app
-b.API> docker-compose up -d
-b.API> dotnet run
-f> npm i
-f> npm run dev
+b.API:
+> docker-compose up -d
+> 
+b.API:
+> dotnet run
+> 
+fe:
+> npm i
+> 
+fe:
+> npm run dev
