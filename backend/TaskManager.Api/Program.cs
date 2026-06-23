@@ -2,7 +2,11 @@
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TaskManager.Application.Interfaces;
+using TaskManager.Application.Services;
 using TaskManager.Infrastructure;
+using TaskManager.Infrastructure.Repositories;
+using TaskManager.Infrastructure.Service;
 
 namespace TaskManager.API;
 public class Program
@@ -21,10 +25,11 @@ public class Program
             opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
         );
 
-        // builder.Services.AddScoped<IUserRepository, UserRepository>();
-        // builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-        // builder.Services.AddScoped<IAuthService, AuthService>();
-        // builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        builder.Services.AddScoped<IPasswordService, PasswordService>();
 
         // JWT AUTH
         builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)

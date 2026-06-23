@@ -3,7 +3,7 @@ using TaskManager.Domain.Entities;
 
 namespace TaskManager.Application.Services;
 
-internal class AuthService(IUserRepository repo, IJwtTokenGenerator jwt, IPasswordService password) : IAuthService
+public class AuthService(IUserRepository repo, IJwtTokenGenerator jwt, IPasswordService password) : IAuthService
 {
     private readonly IUserRepository _repo = repo;
 
