@@ -1,21 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
-using TaskManager.Infrastructure;
 
+namespace TaskManager.Infrastructure;
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext CreateDbContext(string[] args)
     {
-        var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        var connectionString = Environment.GetEnvironmentVariable("MYAPP_CONNECTION_STRING");
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Connection string not set in environment variables.");
+        }
 
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"));
+        optionsBuilder.UseSqlServer(connectionString);
 
-       
         return new AppDbContext(optionsBuilder.Options);
     }
 }
