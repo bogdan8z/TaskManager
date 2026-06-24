@@ -1,16 +1,45 @@
 # Task Manager
-.NET 9
-react
+
+A simple full-stack task management application composed of a React frontend and a .NET backend.
+
+## What the project does
+- Lets users register and log in securely.
+- Allows authenticated users to create and view their own tasks.
+- Stores task data in SQL Server through a REST API.
+
+## Frontend
+- Built with React 18 and Vite.
+- Provides the login/register experience and the task dashboard UI.
+- Uses browser-based fetch requests to talk to the backend.
+- Sends JWT tokens in the Authorization header for protected requests.
+
+## Backend
+- Built with ASP.NET Core (.NET 9).
+- Exposes REST endpoints for authentication and task management.
+- Uses Entity Framework Core with SQL Server for persistence.
+- Implements JWT-based authentication and Swagger for API exploration.
+
+## Project structure
+```text
+backend/
+  TaskManager.Api/        # ASP.NET Core API layer
+  TaskManager.Application/ # Business logic and interfaces
+  TaskManager.Domain/      # Core entities
+  TaskManager.Infrastructure/ # EF Core, repositories, JWT, password hashing
+frontend/
+  src/                     # React components and API integration
+  public/                  # Static assets
+```
 
 ## Run the app
-b.API:
-> docker-compose up -d
-> 
-b.API:
-> dotnet run
-> 
-fe:
-> npm i
-> 
-fe:
-> npm run dev
+Backend:
+```bash
+docker-compose up -d
+dotnet run
+```
+
+Frontend:
+```bash
+npm install
+npm run dev
+```

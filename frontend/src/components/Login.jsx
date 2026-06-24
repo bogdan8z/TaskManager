@@ -13,9 +13,13 @@ export default function Login({ onLogin }) {
     try {
       const fn = isRegister ? register : login
       const token = await fn(email, password)
-      if (typeof token === 'string') onLogin(token)
-      else if (token?.token) onLogin(token.token)
-      else throw new Error('Invalid token response')
+      if (typeof token === 'string') {
+        onLogin(token)
+      } else if (token?.token) {
+        onLogin(token.token)
+      } else {
+        throw new Error('Invalid token response')
+      }
     } catch (err) {
       setError(err?.message || String(err))
     }

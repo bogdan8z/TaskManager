@@ -24,7 +24,9 @@ export default function TaskDashboard({ token, onLogout }) {
 
   async function addTask(e) {
     e.preventDefault()
-    if (!title) return
+    if (!title) {
+      return;
+    }
     try {
       await createTask(token, title)
       setTitle('')

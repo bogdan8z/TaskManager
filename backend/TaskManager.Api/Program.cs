@@ -55,9 +55,6 @@ public class Program
 
         var app = builder.Build();
 
-        // AUTO MIGRATION HERE
-        AutoAddDbMigration(app);
-
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -74,35 +71,5 @@ public class Program
         app.MapControllers();
 
         app.Run();
-    }
-
-    private static void AutoAddDbMigration(WebApplication app)
-    {
-        var retries = 5;
-        Exception? lastException = null;
-        while (retries > 0)
-        {
-            try
-            {
-                using var scope = app.Services.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                db.Database.Migrate();
-                Console.WriteLine("Database migration completed successfully.");
-                lastException = null;
-                break;
-            }
-            catch(Exception ex)
-            {
-                retries--;
-                lastException = ex;
-                Thread.Sleep(2000);
-            }
-        }
-
-        if(lastException != null)
-        {
-            Console.WriteLine("Database migration failed after 5 attempts.");
-            Console.WriteLine(lastException.Message);
-        }
     }
 }

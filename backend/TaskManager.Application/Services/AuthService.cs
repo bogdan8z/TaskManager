@@ -29,7 +29,9 @@ public class AuthService(IUserRepository repo, IJwtTokenGenerator jwt, IPassword
         var user = await _repo.GetByEmailAsync(email);
 
         if (user == null || _password.VerifyPassword(password, user.PasswordHash))
+        {
             throw new Exception("Invalid credentials");
+        }
 
         return _jwt.Generate(user);
     }

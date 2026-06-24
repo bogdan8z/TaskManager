@@ -1,111 +1,73 @@
-# Task Management API – .NET 8 + JWT + Clean Architecture
-## Clean Architecture Overview
+# Task Management API
 
-Modern .NET best practice follows Clean Architecture.
+This backend powers the task manager application for the React frontend. It exposes secure REST endpoints for authentication and task operations.
 
-## Architecture Layers
+## Tech stack
+- ASP.NET Core Web API on .NET 9
+- Entity Framework Core with SQL Server
+- JWT Bearer authentication
+- Swagger/OpenAPI for API exploration
+- Clean Architecture with separate API, Application, Domain, and Infrastructure layers
 
-- **API (Controllers)**
-  - Handles incoming requests and delegates work to the application layer.
-- **Infrastructure (DB, APIs, external stuff)**
-  - Implements external dependencies like data access, external APIs, and other technical services.
-- **Application (use cases, what the system does)**
-  - Contains use cases, business logic orchestration, validation, and application-specific behavior.
-- **Domain (core business)**
-  - Contains core business entities and rules.
+## What the backend does
+- Registers and authenticates users
+- Issues JWT tokens after successful login
+- Stores and retrieves tasks for each authenticated user
+- Applies EF Core migrations automatically when the application starts
 
-## Layer Responsibilities
+## Architecture layers
+- API: controllers that receive HTTP requests and return responses
+- Application: business logic and service interfaces
+- Domain: core entities such as User and TaskItem
+- Infrastructure: EF Core DbContext, repositories, password hashing, JWT generation, SQL Server access
 
-### Domain (CORE)
-- Entities such as `Order`, `User`
-- Business rules
-- No EF, HTTP, or framework-specific code
+## How it communicates with the frontend
+- The frontend sends JSON HTTP requests to the API.
+- Authentication endpoints:
+  - POST /api/auth/register
+  - POST /api/auth/login
+- Protected task endpoints:
+  - GET /tasks
+  - POST /tasks
+- The frontend includes a Bearer token in the Authorization header for protected requests.
 
-Example:
-```csharp
-public class Order
-{
-    // Domain logic here
-}
+## Running locally
+### Install dotnet-ef tool
+```bash
+dotnet tool install dotnet-ef
 ```
 
-### Application
-- Business logic and abstractions (interfaces)
-- Not DB-specific
-- Not framework-specific
-- Use cases, commands, queries, and DTOs
-- Interfaces for repositories and services
-- Coordinates domain and infrastructure
-
-Example:
-```csharp
-public class PayOrderHandler
-{
-    private readonly IOrderRepository _repo;
-
-    public async Task Handle(Guid orderId)
-    {
-        var order = await _repo.Get(orderId);
-        order.Pay();
-        await _repo.Save(order);
-    }
-}
+### Start the database, by running this in the API project:
+```bash
+docker-compose up -d
 ```
 
-### Infrastructure
-- Technical implementation of external concerns
-- Data access, APIs, external service integrations
-- Implements application interfaces
-- Examples: EF Core, external APIs, file system, email
-
-Example:
-```csharp
-public class OrderRepository : IOrderRepository
-{
-    // Repository implementation here
-}
+### Run the API:
+```bash
+dotnet run
 ```
 
-### API (Presentation)
-- Controllers only call the application layer
-- Serves as the entry point for clients
+### If you change entities, add a new migration, by running this in Infrastructure project, before starting the API:
+```bash
+dotnet ef migrations add <MigrationName>
+dotnet ef database update
+dotnet ef migrations script -o Scripts/db-changes.sql
+```
+So every time you do a change to the entities you need to add a new migration (also be sure you have added any new tables in AppDbContext.cs file)
 
-## Summary
-- **Domain Layer** → Core business rules and entities.
-- **Application Layer** → Coordinates business rules, use cases, and workflows.
-- **Infrastructure Layer** → Handles external dependencies like databases, APIs, and file systems.
-- **Presentation** → API/UI entry point for users and clients.
-
-### Add migration, see AutoAddDbMigration method
-First time run in Infra project:
-> dotnet ef migrations add InitialCreate
-> dotnet ef database update
-After that every time you do a change to the entities you need to add a new migration
+### If the SQL Server connection is not working, verify the container IP and update the connection string in the app settings accordingly, by running:
+```bash
+docker inspect <container_id> | grep IPAddress
+```
 
 ### Debugging database:
-
+```bash
 > docker exec -it sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -C
 > select name from sys.databases
 > GO
 
-### TaskManager API 
-The project uses docker for sql server (check *docker-compose.yml* file)
-Run the database:
-> docker-compose up -d
-
-Run the API:
-> dotnet run
-
-Every time you start the API you need to check if the connectionstring has the correct ip address of the sql server, by running:
-> docker inspect <container_id> | grep IPAddress
-
-and get the ip address, then in appsettings.json check that you have: 
-```json
-  "ConnectionStrings": {
-      "Default": "server=<ip_address>,1433;Database=TaskDb;User Id=sa;Password=\"5ZI6=q;A0ni=\";TrustServerCertificate=True"
-    }
-```
-
 ## Links
+- [Clean Architecture Overview](CLEANARCHITECTURE.md)
 - https://sharpskill.dev/en/blog/dotnet/clean-architecture-dotnet-practical-guide
 - https://dev.to/ravivis13370227/clean-architecture-in-net-application-step-by-step-2ol0
+- https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli
