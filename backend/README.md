@@ -50,7 +50,7 @@ dotnet run
 ### If you change entities, add a new migration, by running this in Infrastructure project, before starting the API:
 ```bash
 dotnet ef migrations add <MigrationName>
-dotnet ef database update
+dotnet ef database update --connection "Host=localhost;Database=CommerceDB_dev;User Id=postgres;Password=yourpassword;"
 dotnet ef migrations script -o Scripts/db-changes.sql
 ```
 So every time you do a change to the entities you need to add a new migration (also be sure you have added any new tables in AppDbContext.cs file)
