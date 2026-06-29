@@ -1,5 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5253'
-
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://localhost:7240'
 async function request(path, options = {}) {
   const url = `${API_BASE}${path}`
   const res = await fetch(url, options)
@@ -21,7 +20,9 @@ export function login(email, password) {
 export function register(email, password) {
   return request('/api/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json'      
+    },
     body: JSON.stringify({ email, password }),
   })
 }

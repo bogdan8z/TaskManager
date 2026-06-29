@@ -27,8 +27,7 @@ public class AuthService(IUserRepository repo, IJwtTokenGenerator jwt, IPassword
     public async Task<string> Login(string email, string password)
     {
         var user = await _repo.GetByEmailAsync(email);
-
-        if (user == null || _password.VerifyPassword(password, user.PasswordHash))
+        if (user == null || !_password.VerifyPassword(password, user.PasswordHash))
         {
             throw new Exception("Invalid credentials");
         }

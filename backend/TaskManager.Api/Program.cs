@@ -21,8 +21,11 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Resolve connection string from configuration or environment fallback
+        var connectionString = AppDbContextFactory.GetConnectionString(builder.Configuration);
+
         builder.Services.AddDbContext<AppDbContext>(opt =>
-            opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
+            opt.UseSqlServer(connectionString)
         );
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();

@@ -43,11 +43,6 @@ docker-compose up -d
 ```
 this will create a sql server with the connection string: "server=172.18.0.2,1433;Database=TaskDb;User Id=sa;Password=\"5ZI6=q;A0ni=\";TrustServerCertificate=True"
 
-### Run the API:
-```bash
-dotnet run
-```
-
 ### If you change entities, add a new migration, by running this in Infrastructure project, before starting the API:
 ```bash
 export MYAPP_CONNECTION_STRING="your_connection_string_here"
@@ -56,6 +51,16 @@ dotnet ef database update
 dotnet ef migrations script -o Scripts/db-changes.sql
 ```
 So every time you do a change to the entities you need to add a new migration (also be sure you have added any new tables in AppDbContext.cs file)
+
+### On first run you need to do a database update, before starting the API:
+```bash
+dotnet ef database update
+```
+
+### Run the API:
+```bash
+dotnet run
+```
 
 ### If the SQL Server connection is not working, verify the container IP and update the connection string in the app settings accordingly, by running:
 ```bash
